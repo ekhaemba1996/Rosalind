@@ -10,10 +10,6 @@ def get_iter_slices(given, slice_length, exclusive=True):
         yield given[i:i+slice_length]
 
 def parse_FASTA(contents):
-    contents = contents.replace('\n','')
-    content_list = re.split('>(Rosalind_\d+)', contents)
-    content_list = content_list[1:]
-    keys = content_list[::2]
-    vals = content_list[1::2]
-    ros_dict = {key:vals[i] for (i,key) in enumerate(keys)}
+    pattern = re.compile('>(Rosalind_\d+)\n(([GATC]+\n)+)')
+    ros_dict = {key:''.join(cap_group.split()) for key, cap_group, _ in re.findall(pattern, contents)}
     return ros_dict
